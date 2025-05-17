@@ -5,18 +5,13 @@ import "time"
 
 type tSpend struct {
 	jumlah int
-	tipe   string
+	tipe string
 	time.Time
 }
 
 type bdgt struct {
 	tots int
 	trip int
-}
-
-type waktu struct {
-	jam, menit         int
-	hari, bulan, tahun int
 }
 
 const NMAX int = 50
@@ -45,6 +40,7 @@ func main() {
 		fmt.Println("4.History")
 		fmt.Println("5.Spending")
 		fmt.Println("6.Exit")
+		fmt.Print("-------------------------------------------------\n")
 		fmt.Scan(&option)
 		switch option {
 		case 1:
@@ -70,7 +66,7 @@ func main() {
 				Budget.trip = 0
 			}
 		case 3:
-			sPend(&data, idx, &Budget.trip)
+			sPend(&data, &idx, &Budget.trip)
 			idx++
 		case 4:
 			hIst(data, idx)
@@ -78,24 +74,31 @@ func main() {
 			fmt.Println("Terima Kasih!")
 		case 5:
 
+		default:
+			fmt.Print("Not a valid command")
+
 		}
 	}
 }
 
-func sPend(A *tabSpend, n int, B *int){
-	fmt.Print("-------------------------------------------------\n")
+func sPend(A *tabSpend, n *int, B *int){
 	fmt.Print("Input Your Spending And Spending Type: ")
-	bacaData(A, n)
-	fmt.Print(A[n].jumlah)
-	*B = *B - A[n].jumlah
+	bacaData(A, *n)
+	if A[*n].jumlah > *B {
+		fmt.Println("Insufficient Budget")
+		A[*n].jumlah = 0
+		*n -= 1
+	} else {
+	*B = *B - A[*n].jumlah
+	}
 }
 
 func hIst(A tabSpend, n int){
 	var opsi int
 	fmt.Print("-------------------------------------------------\n")
 	fmt.Print("Spending History:\n")
+	fmt.Println()
 	cetakData(A, n)
-	fmt.Print("-------------------------------------------------\n")
 	fmt.Print("Filter:\n")
 	fmt.Println("1.Sort")
 	fmt.Println("2.Search")
@@ -126,9 +129,13 @@ func choice1(A tabSpend, n int){
 		switch i {
 		case 1:
 			insertionsortKecilBesar(&A, n)
+			fmt.Print("Spending History:\n")
+			fmt.Println()
 			cetakData(A, n)
 		case 2: 
 			insertionsortBesarKecil(&A, n)
+			fmt.Print("Spending History:\n")
+			fmt.Println()
 			cetakData(A, n)
 		}
 	} else {
@@ -139,9 +146,13 @@ func choice1(A tabSpend, n int){
 		switch i {
 		case 1:
 			insertionsortKecilBesar2(&A, n)
+			fmt.Print("Spending History:\n")
+			fmt.Println()
 			cetakData(A, n)
 		case 2: 
 			insertionsortBesarKecil2(&A, n)
+			fmt.Print("Spending History:\n")
+			fmt.Println()
 			cetakData(A, n)
 		}
 	}
@@ -201,7 +212,8 @@ func insertionsortBesarKecil2(data *tabSpend, n int) {
 
 func cetakData(A tabSpend, n int){
 	var i int
+	fmt.Print("-------------------------------------------------\n")
 	for i = 0; i < n; i++{
-		fmt.Println(A[i].jumlah, A[i].Time.Format("2006-08-08 07:08:06"))
+		fmt.Println(A[i].jumlah, A[i].Time.Format("2006-01-02 15:04:05"))
 	}
 }
