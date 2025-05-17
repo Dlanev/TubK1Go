@@ -1,15 +1,14 @@
 package main
 
 import "fmt"
+import "time"
 
-const NMAX int = 99
-type tabInt[NMAX]int
-
-func bacaData(data tabInt) {
+/*func bacaData(data tabSpend) {
+	var t string = time.Now()
 	
 }
 
-func tampilkanData(data tabInt) {
+func tampilkanData(data tabSpend) {
 	var i int
 	for i = 0; i < len(data); i++ {
 		fmt.Print(data[i], " ")
@@ -17,9 +16,9 @@ func tampilkanData(data tabInt) {
 	fmt.Println()
 }
 
-func insertionsortKecilBesar(data *tabInt) {
+func insertionsortKecilBesar(data *tabSpend, n int) {
 	var i, j, key int
-	for i = 1; i < len(data); i++ {
+	for i = 1; i < n; i++ {
 		key = data[i]
 		j = i - 1
 		for j >= 0 && data[j] > key {
@@ -30,7 +29,7 @@ func insertionsortKecilBesar(data *tabInt) {
 	}
 }
 
-func insertionsortBesarKecil(data *tabInt) {
+func insertionsortBesarKecil(data *tabSpend) {
 	var i, j, key int
 	for i = 1; i < len(data); i++ {
 		key = data[i]
@@ -43,29 +42,3 @@ func insertionsortBesarKecil(data *tabInt) {
 	}
 }
 
-func main() {
-	var data tabInt
-	var nData, i, t int
-
-	fmt.Print("Masukkan banyak data: ")
-	fmt.Scan(&nData)
-	fmt.Print("Masukkan data: ")
-	for i = 0; i < nData; i++ {
-		fmt.Scan(&data[i])
-	}
-	fmt.Println()
-
-	fmt.Println("TAMPILKAN DATA")
-	fmt.Println("1. Urutkan data dari terbesar ke terkecil")
-	fmt.Println("2. Urutkan data dari terkecil ke terbesar")
-	fmt.Print("Pilih opsi: ")
-	fmt.Scan(&t)
-
-	if t == 1 {
-		insertionsortBesarKecil(&data, nData)
-		tampilkanData(data, nData)
-	} else if t == 2 {
-		insertionsortKecilBesar(&data, nData)
-		tampilkanData(data, nData)
-	}
-}
