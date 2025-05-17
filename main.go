@@ -14,11 +14,6 @@ type bdgt struct {
 	trip int
 }
 
-type waktu struct {
-	jam, menit         int
-	hari, bulan, tahun int
-}
-
 const NMAX int = 50
 
 type tabSpend [NMAX]tSpend
