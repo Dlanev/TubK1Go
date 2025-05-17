@@ -75,7 +75,7 @@ func main() {
 		case 4:
 			hIst(data, idx)
 		case 6:
-			fmt.Println("Terima Kasih")
+			fmt.Println("Terima Kasih!")
 		case 5:
 
 		}
@@ -114,19 +114,27 @@ func bacaData(A *tabSpend, n int){
 
 func choice1(A tabSpend, n int){
 	var i int
+	fmt.Print("-------------------------------------------------\n")
 	fmt.Println("1.By Amount\n2.By Time")
+	fmt.Print("-------------------------------------------------\n")
 	fmt.Scan(&i)
 	if i == 1{
-		fmt.Print("1.Ascending\n2.Descending")
+		fmt.Print("-------------------------------------------------\n")
+		fmt.Print("1.Ascending\n2.Descending\n")
+		fmt.Print("-------------------------------------------------\n")
 		fmt.Scan(&i)
 		switch i {
 		case 1:
 			insertionsortKecilBesar(&A, n)
+			cetakData(A, n)
 		case 2: 
 			insertionsortBesarKecil(&A, n)
+			cetakData(A, n)
 		}
 	} else {
-		fmt.Print("1.Ascending\n2.Descending")
+		fmt.Print("-------------------------------------------------\n")
+		fmt.Print("1.Ascending\n2.Descending\n")
+		fmt.Print("-------------------------------------------------\n")
 		fmt.Scan(&i)
 		switch i {
 		case 1:
