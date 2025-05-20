@@ -83,9 +83,13 @@ func main() {
 		case 5:
 			fmt.Print("-------------------------------------------------\n")
 			cHart(data, idx, "Pembelian")
+			fmt.Println()
 			cHart(data, idx, "Konsumsi")
+			fmt.Println()
 			cHart(data, idx, "Transportasi")
+			fmt.Println()
 			cHart(data, idx, "Lainnya")
+			fmt.Println()
 		default:
 			fmt.Print("Not a valid command")
 
@@ -337,5 +341,4 @@ func cHart(A tabSpend, n int, tipe string) {
 			fmt.Print("-")
 		}
 	}
-	fmt.Printf(" %s\n", tipe)
 }
