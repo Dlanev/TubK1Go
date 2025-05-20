@@ -113,7 +113,24 @@ func hIst(A tabSpend, n int, x int) {
 	fmt.Scan(&opsi)
 	switch opsi {
 	case 1:
-		choice1(A, n, x)
+		choice1(A, n)
+	case 2:
+		var kategori string
+		var idx, i int
+		fmt.Println("[Categories: Pembelian, Konsumsi, Transportasi, Lainnya]")
+		fmt.Print("-------------------------------------------------\n")
+		fmt.Print("Input the category you want to search: ")
+		fmt.Scan(&kategori)
+		insertionsortKategori(&A, n)
+		idx = binarySearchType(A, n, kategori)
+		if idx == 1 {
+			fmt.Println("The category you are looking for was not found.")
+		} else {
+			fmt.Printf("Spending in the %s category: \n", kategori)
+			for i = idx; i < n && A[i].tipe == kategori; i++ {
+				fmt.Println(A[i].jumlah, A[i].tipe, A[i].Time.Format("2006-01-02 15:04:05"))
+			}
+		}
 	}
 }
 
@@ -133,7 +150,7 @@ func bacaData(A *tabSpend, n int) {
 	A[n].Time = time.Now()
 }
 
-func choice1(A tabSpend, n int, x int) {
+func choice1(A tabSpend, n int) {
 	var i int
 	fmt.Print("-------------------------------------------------\n")
 	fmt.Println("1.By Amount\n2.By Time")
@@ -232,19 +249,44 @@ func insertionsortBesarKecil2(data *tabSpend, n int) {
 	}
 }
 
-func cetakData(A tabSpend, n int) {
-	var i, j, total int
-		for i = 0; i < n; i++ {
-			if i == A[j].line {
-				fmt.Println()
-				fmt.Printf("TRIP %s\n", tripName[j])
-				j++
-			}
-			fmt.Println(A[i].jumlah, A[i].Time.Format("2006-01-02 15:04:05"), A[i].tipe)
+func insertionsortKategori(data *tabSpend, n int) {
+	for i := 1; i < n; i++ {
+		key := data[i]
+		j := i - 1
+		for j >= 0 && data[j].tipe > key.tipe {
+			data[j+1] = data[j]
+			j--
 		}
-	
-	for i = 0; i < n; i++ {
-		total += A[i].jumlah
+		data[j+1] = key
+	}
+}
+
+func binarySearchType(data tabSpend, n int, target string) int {
+	var low, high, mid int
+	low = 0
+	high = n -1 
+	for low <= high {
+		mid = (low + high) / 2
+		if data[mid]. tipe == target {
+			for mid > 0 && data[mid-1].tipe == target {
+				mid--
+			}
+			return mid
+		} else if data[mid].tipe < target {
+			low = mid + 1
+		} else {
+			high = mid - 1
+		}
+		
+	}
+	return -1
+}
+
+func cetakData(A tabSpend, n int){
+	var i, total int
+	fmt.Print("-------------------------------------------------\n")
+	for i = 0; i < n; i++{
+		fmt.Println(A[i].jumlah, A[i].Time.Format("2006-01-02 15:04:05"))
 	}
 	fmt.Println()
 	fmt.Println("Total Pengeluaran:", total)
