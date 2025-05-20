@@ -7,7 +7,7 @@ type tSpend struct {
 	jumlah int
 	tipe   string
 	time.Time
-	line int
+	name string
 }
 
 type bdgt struct {
@@ -16,14 +16,15 @@ type bdgt struct {
 }
 
 const NMAX int = 50
+
 var tripName [NMAX]string
+
 type tabSpend [NMAX]tSpend
 
 func main() {
 	var data tabSpend
 	var Budget bdgt
-	var option, count, idx, tripNum int
-	count = 1
+	var option, idx, i int
 	for option != 6 {
 		fmt.Print("-------------------------------------------------")
 		fmt.Println()
@@ -39,7 +40,7 @@ func main() {
 		}
 		fmt.Println("3.Spend")
 		fmt.Println("4.History")
-		fmt.Println("5.Spending")
+		fmt.Println("5.Spend Chart")
 		fmt.Println("6.Exit")
 		fmt.Print("-------------------------------------------------\n")
 		fmt.Scan(&option)
@@ -48,38 +49,43 @@ func main() {
 			fmt.Print("Input Balance:")
 			fmt.Scan(&Budget.tots)
 		case 2:
-			if count%2 != 0 {
+			if Budget.trip == 0 {
 				if Budget.tots == 0 {
 					fmt.Println("No Balance")
 				} else {
 					fmt.Print("Set a budget:")
 					fmt.Scan(&Budget.trip)
 					fmt.Println("Where to?")
-					fmt.Scan(&tripName[tripNum])
+					fmt.Scan(&tripName[i])
 					if Budget.trip > Budget.tots {
 						fmt.Println("Insufficient Balance")
 						Budget.trip = 0
 					} else {
 						Budget.tots -= Budget.trip
-						count++
 					}
 				}
 			} else {
-				data[count-1].line = idx
 				Budget.tots += Budget.trip
 				Budget.trip = 0
-				tripNum++
-				count++
+				i++
 			}
 		case 3:
-			sPend(&data, &idx, &Budget.trip)
-			idx++
+			if Budget.trip == 0 {
+				fmt.Println("No active trip budget. Start a trip first.")
+			} else {
+				sPend(&data, &idx, &Budget.trip, i)
+			}
+
 		case 4:
-			hIst(data, idx, tripNum)
+			hIst(data, idx)
 		case 6:
 			fmt.Println("Terima Kasih!")
 		case 5:
-
+			fmt.Print("-------------------------------------------------\n")
+			cHart(data, idx, "Pembelian")
+			cHart(data, idx, "Konsumsi")
+			cHart(data, idx, "Transportasi")
+			cHart(data, idx, "Lainnya")
 		default:
 			fmt.Print("Not a valid command")
 
@@ -87,19 +93,19 @@ func main() {
 	}
 }
 
-func sPend(A *tabSpend, n *int, B *int) {
+func sPend(A *tabSpend, n *int, B *int, i int) {
 	fmt.Print("Input Your Spending And Spending Type: ")
-	bacaData(A, *n)
+	bacaData(A, *n, i)
 	if A[*n].jumlah > *B {
 		fmt.Println("Insufficient Budget")
 		A[*n].jumlah = 0
-		*n -= 1
 	} else {
 		*B = *B - A[*n].jumlah
+		*n += 1
 	}
 }
 
-func hIst(A tabSpend, n int, x int) {
+func hIst(A tabSpend, n int) {
 	var opsi int
 	fmt.Print("-------------------------------------------------\n")
 	fmt.Print("Spending History:\n")
@@ -116,25 +122,35 @@ func hIst(A tabSpend, n int, x int) {
 		choice1(A, n)
 	case 2:
 		var kategori string
-		var idx, i int
-		fmt.Println("[Categories: Pembelian, Konsumsi, Transportasi, Lainnya]")
+		var idx, i, katIdx int
+		fmt.Println("Categories:\n 1.Pembelian\n2.Konsumsi\n3.Transportasi\n4.Lainnya\n")
 		fmt.Print("-------------------------------------------------\n")
 		fmt.Print("Input the category you want to search: ")
-		fmt.Scan(&kategori)
+		fmt.Scan(&katIdx)
+		switch katIdx {
+		case 1:
+			kategori = "Pembelian"
+		case 2:
+			kategori = "Konsumsi"
+		case 3:
+			kategori = "Transportasi"
+		default:
+			kategori = "Lainnya"
+		}
 		insertionsortKategori(&A, n)
 		idx = binarySearchType(A, n, kategori)
-		if idx == 1 {
+		if idx == -1 {
 			fmt.Println("The category you are looking for was not found.")
 		} else {
 			fmt.Printf("Spending in the %s category: \n", kategori)
 			for i = idx; i < n && A[i].tipe == kategori; i++ {
-				fmt.Println(A[i].jumlah, A[i].tipe, A[i].Time.Format("2006-01-02 15:04:05"))
+				fmt.Println(A[i].jumlah, A[i].Time.Format("2006-01-02 15:04:05"), A[i].tipe, A[i].name)
 			}
 		}
 	}
 }
 
-func bacaData(A *tabSpend, n int) {
+func bacaData(A *tabSpend, n int, i int) {
 	var typeIndex int
 	fmt.Scan(&A[n].jumlah, &typeIndex)
 	switch typeIndex {
@@ -148,6 +164,7 @@ func bacaData(A *tabSpend, n int) {
 		A[n].tipe = "Lainnya"
 	}
 	A[n].Time = time.Now()
+	A[n].name = tripName[i]
 }
 
 func choice1(A tabSpend, n int) {
@@ -264,10 +281,10 @@ func insertionsortKategori(data *tabSpend, n int) {
 func binarySearchType(data tabSpend, n int, target string) int {
 	var low, high, mid int
 	low = 0
-	high = n -1 
+	high = n - 1
 	for low <= high {
 		mid = (low + high) / 2
-		if data[mid]. tipe == target {
+		if data[mid].tipe == target {
 			for mid > 0 && data[mid-1].tipe == target {
 				mid--
 			}
@@ -277,18 +294,48 @@ func binarySearchType(data tabSpend, n int, target string) int {
 		} else {
 			high = mid - 1
 		}
-		
+
 	}
 	return -1
 }
 
-func cetakData(A tabSpend, n int){
+func cetakData(A tabSpend, n int) {
 	var i, total int
 	fmt.Print("-------------------------------------------------\n")
-	for i = 0; i < n; i++{
-		fmt.Println(A[i].jumlah, A[i].Time.Format("2006-01-02 15:04:05"))
+	for i = 0; i < n; i++ {
+		fmt.Println(A[i].jumlah, A[i].Time.Format("2006-01-02 15:04:05"), A[i].tipe, A[i].name)
+		total += A[i].jumlah
 	}
 	fmt.Println()
+	fmt.Println("Pembelian:", toTal(A, n, "Pembelian"))
+	fmt.Println("Konsumsi:", toTal(A, n, "Konsumsi"))
+	fmt.Println("Transportasi:", toTal(A, n, "Transportasi"))
+	fmt.Println("Lainnya:", toTal(A, n, "Lainnya"))
 	fmt.Println("Total Pengeluaran:", total)
-	
+
+}
+
+func toTal(A tabSpend, n int, tipe string) int {
+	var total, i int
+	for i = 0; i < n; i++ {
+		if A[i].tipe == tipe {
+			total += A[i].jumlah
+		}
+	}
+	return total
+}
+
+func cHart(A tabSpend, n int, tipe string) {
+	var i int
+	var length int
+	length = toTal(A, n, tipe)/100000
+	for i = 0; i < length; i++{
+		if i == 0 {
+			fmt.Printf("%12s |", tipe)
+		}
+		if A[i].tipe == tipe{
+			fmt.Print("-")
+		}
+	}
+	fmt.Printf(" %s\n", tipe)
 }
