@@ -98,7 +98,6 @@ func main() {
 }
 
 func sPend(A *tabSpend, n *int, B *int, i int) {
-	fmt.Print("Input Your Spending And Spending Type: ")
 	bacaData(A, *n, i)
 	if A[*n].jumlah > *B {
 		fmt.Println("Insufficient Budget")
@@ -127,9 +126,12 @@ func hIst(A tabSpend, n int) {
 	case 2:
 		var kategori string
 		var idx, i, katIdx int
-		fmt.Println("Categories:\n 1.Pembelian\n2.Konsumsi\n3.Transportasi\n4.Lainnya\n")
-		fmt.Print("-------------------------------------------------\n")
-		fmt.Print("Input the category you want to search: ")
+		fmt.Println("Categories:")
+		fmt.Println("1. Pembelian")
+		fmt.Println("2. Konsumsi")
+		fmt.Println("3. Transportasi")
+		fmt.Println("4. Lainnya")
+		fmt.Print("Input your spending type: ")
 		fmt.Scan(&katIdx)
 		switch katIdx {
 		case 1:
@@ -138,8 +140,11 @@ func hIst(A tabSpend, n int) {
 			kategori = "Konsumsi"
 		case 3:
 			kategori = "Transportasi"
-		default:
+		case 4:
 			kategori = "Lainnya"
+		default:
+			fmt.Println("Invalid option.")
+			return
 		}
 		insertionsortKategori(&A, n)
 		idx = binarySearchType(A, n, kategori)
@@ -156,7 +161,15 @@ func hIst(A tabSpend, n int) {
 
 func bacaData(A *tabSpend, n int, i int) {
 	var typeIndex int
-	fmt.Scan(&A[n].jumlah, &typeIndex)
+	fmt.Print("Input your spending: ")
+	fmt.Scan(&A[n].jumlah)
+	fmt.Println("Spending type:")
+	fmt.Println("1. Pembelian")
+	fmt.Println("2. Konsumsi")
+	fmt.Println("3. Transportasi")
+	fmt.Println("4. Lainnya")
+	fmt.Print("Input your spending type: ")
+	fmt.Scan(&typeIndex)
 	switch typeIndex {
 	case 1:
 		A[n].tipe = "Pembelian"
